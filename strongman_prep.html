@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strongman Competition Prep</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f8f6;
+    --surface: #ffffff;
+    --surface-secondary: #f3f2ef;
+    --text-primary: #1a1a18;
+    --text-secondary: #6b6b66;
+    --border: rgba(0,0,0,0.1);
+    --border-strong: rgba(0,0,0,0.2);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161614;
+      --surface: #1f1f1c;
+      --surface-secondary: #2a2a27;
+      --text-primary: #f0ede8;
+      --text-secondary: #8a8a82;
+      --border: rgba(255,255,255,0.1);
+      --border-strong: rgba(255,255,255,0.2);
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  header { margin-bottom: 2rem; }
+  header h1 { font-size: 26px; font-weight: 500; color: var(--text-primary); }
+  header p { font-size: 14px; color: var(--text-secondary); margin-top: 5px; }
+
+  .week-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .week-tab {
+    padding: 7px 16px; font-size: 13px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    cursor: pointer; background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .week-tab:hover { background: var(--surface-secondary); }
+  .week-tab.active { background: var(--surface); border-color: var(--border-strong); color: var(--text-primary); font-weight: 500; }
+  .week-tab.comp { border-color: #D85A30; color: #D85A30; }
+  .week-tab.comp.active { background: #FAECE7; }
+
+  .days-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+
+  .day-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+  }
+  .day-title { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+  .day-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 12px; }
+
+  .tier-picker { display: flex; gap: 4px; margin-bottom: 10px; }
+  .tier-btn {
+    padding: 5px 11px; font-size: 12px;
+    border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-strong);
+    cursor: pointer; background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .tier-btn:hover { background: var(--surface-secondary); }
+  .tier-btn.active-event { background: #FAECE7; border-color: #D85A30; color: #993C1D; font-weight: 500; }
+  .tier-btn.active-carryover { background: #E6F1FB; border-color: #185FA5; color: #0C447C; font-weight: 500; }
+  .tier-btn.active-accessory { background: #EAF3DE; border-color: #3B6D11; color: #27500A; font-weight: 500; }
+
+  .event-badge {
+    display: inline-block; font-size: 11px;
+    padding: 3px 8px; border-radius: var(--radius-md);
+    margin-bottom: 8px; font-weight: 500;
+  }
+  .badge-event { background: #FAECE7; color: #993C1D; }
+  .badge-carryover { background: #E6F1FB; color: #0C447C; }
+  .badge-accessory { background: #EAF3DE; color: #27500A; }
+
+  .exercise-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .exercise-list li {
+    font-size: 14px; color: var(--text-primary);
+    padding: 7px 10px;
+    background: var(--surface-secondary);
+    border-radius: var(--radius-md);
+    display: flex; align-items: flex-start; gap: 8px;
+    line-height: 1.4;
+  }
+  .exercise-list li i { color: var(--text-secondary); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+  .note {
+    font-size: 12px; color: var(--text-secondary);
+    margin-top: 8px; font-style: italic;
+    padding: 6px 8px;
+    border-left: 2px solid var(--border-strong);
+  }
+
+  .comp-card {
+    background: #FAECE7;
+    border: 2px solid #D85A30;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    grid-column: 1 / -1;
+  }
+  .comp-card h2 { font-size: 20px; font-weight: 500; color: #993C1D; }
+  .comp-card p { font-size: 14px; color: #D85A30; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Competition prep</h1>
+    <p>June 20, 2026 — pick your tier per day based on how you feel</p>
+  </header>
+  <div class="week-tabs" id="weekTabs"></div>
+  <div class="days-grid" id="daysGrid"></div>
+</div>
+
+<script>
+const DAYS = [
+  {
+    id: 'hinge',
+    label: 'Hinge / DL',
+    sub: 'Day 1 · highest spinal load',
+    eventIcon: 'ti-barbell',
+    eventNote: 'Focus on set-up and brace — treat it like the comp',
+    tiers: {
+      event: { label: 'Event', exercises: ['Wagon wheel DL — work up to heavy singles or AMRAP set', 'Pause DL variation if time allows'] },
+      carryover: { label: 'Carry-over', exercises: ['Romanian DL — controlled eccentric', 'KB swing — hip drive focus', 'Roman chair / single arm DL'] },
+      accessory: { label: 'Accessory', exercises: ['Barbell or DB row variation', 'Face pulls / band pull-aparts', 'Core bracing work'] }
+    }
+  },
+  {
+    id: 'press',
+    label: 'Push press',
+    sub: 'Day 2 · lowest spinal load',
+    eventIcon: 'ti-award',
+    eventNote: 'Simulate medley transitions — time the changeover',
+    tiers: {
+      event: { label: 'Event', exercises: ['Push press — sandbag overhead', 'Log OHP — cycle reps or max in time'] },
+      carryover: { label: 'Carry-over', exercises: ['Single arm push press', 'Single arm KB hold with box squat'] },
+      accessory: { label: 'Accessory', exercises: ['Weighted dips'] }
+    }
+  },
+  {
+    id: 'f2s',
+    label: 'Floor to shoulder',
+    sub: 'Day 4 · moderate-high spinal load',
+    eventIcon: 'ti-rotate-clockwise',
+    eventNote: 'Talk to Johnny re: stone access — use heavy sandbag until confirmed',
+    tiers: {
+      event: { label: 'Event', exercises: ['Heavy sandbag floor to shoulder — ARAP format', 'Stone practice if available (contact Johnny)'] },
+      carryover: { label: 'Carry-over', exercises: ['100 lb sandbag floor to shoulder — higher rep, speed focus'] },
+      accessory: { label: 'Accessory', exercises: ['Glute bridges — heavy, banded, or single leg'] }
+    }
+  },
+  {
+    id: 'carry',
+    label: 'Carry / Zercher',
+    sub: 'Day 6 · moderate-high spinal load',
+    eventIcon: 'ti-run',
+    eventNote: "Nail the turnaround and transitions — that's where time is lost",
+    tiers: {
+      event: { label: 'Event', exercises: ['Husafell carry — 50ft', 'Zercher carry — 50ft', 'Practice medley transitions'] },
+      carryover: { label: 'Carry-over', exercises: ['Zercher lunges — more load per leg, less spinal compression'] },
+      accessory: { label: 'Accessory', exercises: ['Suitcase carry', 'Farmer carry'] }
+    }
+  }
+];
+
+let currentWeek = 0;
+const tierState = {};
+DAYS.forEach(d => { tierState[d.id] = 'event'; });
+
+function renderWeekTabs() {
+  const tabs = document.getElementById('weekTabs');
+  tabs.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const weeksOut = 5 - i;
+    const btn = document.createElement('button');
+    btn.className = 'week-tab' + (i === currentWeek ? ' active' : '') + (weeksOut === 1 ? ' comp' : '');
+    btn.textContent = weeksOut === 1 ? 'Week 5 — comp week' : 'Week ' + (i + 1) + ' (' + weeksOut + ' out)';
+    btn.onclick = () => { currentWeek = i; renderWeekTabs(); renderDays(); };
+    tabs.appendChild(btn);
+  }
+}
+
+function renderDays() {
+  const grid = document.getElementById('daysGrid');
+  const weeksOut = 5 - currentWeek;
+  grid.innerHTML = '';
+
+  if (weeksOut === 1) {
+    const card = document.createElement('div');
+    card.className = 'comp-card';
+    card.innerHTML = '<h2>Competition week</h2><p>June 20, 2026 — taper, stay sharp, trust the prep</p><p style="margin-top:12px;font-size:13px;color:#993C1D;">Light movement only. No heavy loading this week.</p>';
+    grid.appendChild(card);
+    return;
+  }
+
+  DAYS.forEach(day => {
+    const tier = tierState[day.id];
+    const tdata = day.tiers[tier];
+    const badgeClass = tier === 'event' ? 'badge-event' : tier === 'carryover' ? 'badge-carryover' : 'badge-accessory';
+    const activeBtnClass = 'active-' + (tier === 'carryover' ? 'carryover' : tier === 'accessory' ? 'accessory' : 'event');
+
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    card.innerHTML = `
+      <div class="day-title"><i class="ti ${day.eventIcon}" aria-hidden="true" style="margin-right:6px;font-size:15px;"></i>${day.label}</div>
+      <div class="day-sub">${day.sub}</div>
+      <div class="tier-picker">
+        <button class="tier-btn ${tier === 'event' ? 'active-event' : ''}" onclick="setTier('${day.id}','event')">Event</button>
+        <button class="tier-btn ${tier === 'carryover' ? 'active-carryover' : ''}" onclick="setTier('${day.id}','carryover')">Carry-over</button>
+        <button class="tier-btn ${tier === 'accessory' ? 'active-accessory' : ''}" onclick="setTier('${day.id}','accessory')">Accessory</button>
+      </div>
+      <span class="event-badge ${badgeClass}">${tdata.label}</span>
+      <ul class="exercise-list">
+        ${tdata.exercises.map(e => `<li><i class="ti ti-point-filled" aria-hidden="true"></i>${e}</li>`).join('')}
+      </ul>
+      ${tier === 'event' ? `<div class="note">${day.eventNote}</div>` : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function setTier(dayId, tier) {
+  tierState[dayId] = tier;
+  renderDays();
+}
+
+renderWeekTabs();
+renderDays();
+</script>
+</body>
+</html>
